@@ -3,7 +3,12 @@ Python tools to get zigbee device info from Home Assistant ZHA
 
 ws02.py
 
-Add a Home Assistant Long-Lived Access Token. The web socket address is coded to localhost. This program just loops and dumps in JSON format the current ZHA devices database via web sockets. Two examples below of how to use jq linux JSON utility to display records:
+Add a Home Assistant Long-Lived Access Token. The web socket address is coded to localhost.
+
+This JSON parser will give you a good overview of the records returned by ZHA, run the program ws02.py and let it capture one query of the ZHA devices, paste it into this tool:
+http://jsonviewer.stack.hu/
+
+This program just loops and dumps in JSON format the current ZHA devices database via web sockets. Two examples below of how to use jq linux JSON utility to display records:
 
 ```
 # current date and time in local time, ieee address, device name, lqi
