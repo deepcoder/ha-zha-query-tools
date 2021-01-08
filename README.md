@@ -35,6 +35,22 @@ This program just loops and dumps in JSON format the current ZHA devices databas
 {"date":"2021-01-08 10:37:45PST","ieee":"00:15:8d:00:02:a6:07:c5","name":"LUMI lumi.sensor_motion.aq2","device_type":"EndDevice","lqi":212}
 ```
 
+```
+# display the children that are end devices
+# this needs work, getting duplicates and need to show parent as well
+./ws02.py | jq -c '.result[]  |
+select( .neighbors[].relationship == "Child" )  |
+select(.neighbors[].relationship == "Child") |
+select(.neighbors[].relationship == "Child") | .neighbors[] | select(.device_type == "EndDevice") | {ieee: .ieee, depth: .depth, lqi: .lqi}'
+{"ieee":"d0:52:a8:00:31:61:00:03","depth":"1","lqi":"183"}
+{"ieee":"00:15:8d:00:02:c2:05:c2","depth":"1","lqi":"255"}
+{"ieee":"00:15:8d:00:02:74:07:35","depth":"1","lqi":"213"}
+{"ieee":"00:15:8d:00:02:ca:f0:17","depth":"1","lqi":"173"}
+{"ieee":"00:15:8d:00:02:c6:dd:96","depth":"1","lqi":"194"}
+{"ieee":"d0:52:a8:00:31:61:00:03","depth":"1","lqi":"183"}
+
+```
+
 ws03.py
 
 Add a Home Assistant Long-Lived Access Token and IP address of your Home Assistant server.
