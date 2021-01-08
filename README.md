@@ -20,11 +20,19 @@ This program just loops and dumps in JSON format the current ZHA devices databas
 
 
 ```
-#UTC Timestamp
+# UTC Timestamp
 ./ws02.py | jq -c '.result[] | {date: (now|strftime("%s")), ieee: .ieee, name: .name, lqi: .lqi}'
 {"date":"1610116915","ieee":"60:a4:23:ff:fe:a3:22:08","name":"Silicon Labs EZSP","lqi":255}
 {"date":"1610116915","ieee":"f0:d1:b8:00:00:56:4a:8e","name":"LEDVANCE PLUG","lqi":196}
 {"date":"1610116915","ieee":"00:15:8d:00:02:ba:f5:02","name":"LUMI lumi.weather","lqi":255}
+```
+
+```
+# display only EndDevices:
+./ws02.py | jq -c '.result[]  | select( .device_type == "EndDevice" )  | {date: (now|strflocaltime("%Y-%m-%d %H:%M:%S%Z")), ieee: .ieee, name: .name, device_type: .device_type, lqi: .lqi}'
+{"date":"2021-01-08 10:37:45PST","ieee":"00:15:8d:00:02:22:f5:72","name":"LUMI lumi.weather","device_type":"EndDevice","lqi":255}
+{"date":"2021-01-08 10:37:45PST","ieee":"28:6d:97:00:01:a2:0e:05","name":"Samjin multi","device_type":"EndDevice","lqi":192}
+{"date":"2021-01-08 10:37:45PST","ieee":"00:15:8d:00:02:a6:07:c5","name":"LUMI lumi.sensor_motion.aq2","device_type":"EndDevice","lqi":212}
 ```
 
 ws03.py
