@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # ws03.py
-# 202101080001 
+# 202101081014  
 #
 # use home assistant web sockets to read zha zigbee devices current state and insert a record into SQLite database for each device found
 # https://developers.home-assistant.io/docs/api/websocket/
@@ -8,6 +8,7 @@
 # https://github.com/dmulcahey/zha-network-card/blob/master/zha-network-card.js
 # http://jsonviewer.stack.hu/
 
+import sys
 import json
 import time
 import sqlite3
@@ -22,7 +23,7 @@ ACCESS_TOKEN = ""
 DATABASE_FILE = "ws03.db"
 
 # home assistant server IP address
-HOME_ASSISTANT_IP = "192.168.1.100"
+HOME_ASSISTANT_IP = "localhost"
 
 # number of seconds between queries to ZHA
 QUERY_PERIOD_SECONDS = 5
@@ -86,9 +87,9 @@ try :
 
         # end loop forever
 
-    except KeyboardInterrupt :
-        conn.close()
-        sys.exit(0)
+except KeyboardInterrupt :
+    conn.close()
+    sys.exit(0)
 
 
 # EOF
