@@ -1,0 +1,7 @@
+# requirements.txt for ws*.*
+# 202101082111 
+
+websocket-client
+rich
+
+
