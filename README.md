@@ -62,5 +62,6 @@ This program tries to display ZHA devices based on their 'neighbor' relationship
 
 Example output:
 
-https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-example-output.png
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-example-output.png?raw=true)
+
 
