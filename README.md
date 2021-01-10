@@ -11,7 +11,8 @@ ACCESS_TOKEN = ''
 
 ws04.py
 
-This program tries to display ZHA devices based on their 'neighbor' relationship. It also records a SQLite database of the data returned by each web socket call to ZHA. Devices seems to stay in ZHA until you delete them, so this routine displays and records when a device goes 'OFFLINE' to the ZHA coordinator. It also records the length of time between when the coordinator sees a device and the devices RSSI and LQI values. Still trying to understand how to interpret this data. 
+This program tries to display ZHA devices based on their 'neighbor' relationship. It also records a SQLite database of the data returned by each web socket call to ZHA. Devices seems to stay in ZHA until you delete them, so this routine displays and records when a device goes 'OFFLINE' to the ZHA coordinator. It also records the length of time between when the coordinator sees a device and the devices RSSI and LQI values. Still trying to understand how to interpret this data.
+Run this program in tmux or other background way to have it collect data over time. And also so you can get another view of the current state of your ZHA zigbee network.
 
 Example output:
 
