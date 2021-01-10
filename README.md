@@ -1,14 +1,31 @@
 # ha-zha-query-tools
 Python tools to get zigbee device info from Home Assistant ZHA
+Change the HA server IP address in this variable if you are not running these programs on the HA server:
+```
+HOME_ASSISTANT_IP = "localhost"
+```
+Add a Home Assistant Long-Lived Access Token and IP address of your Home Assistant server in the code of each program, variable is:
+```
+ACCESS_TOKEN = ''
+```
+
+ws04.py
+
+This program tries to display ZHA devices based on their 'neighbor' relationship. It also records a SQLite database of the data returned by each web socket call to ZHA. Devices seems to stay in ZHA until you delete time, so this routine dislays and records when a device goes 'OFFLINE' to the ZHA coordinator. It also records the length of time between when the coordinator sees a device and the devices RSSI and LQI values. Still trying to understand how to interpret this data. 
+
+Example output:
+
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-display.png?raw=true)
+
+Example SQLite database records:
+
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-sqlite-db.png?raw=true)
 
 ws02.py
-
-Add a Home Assistant Long-Lived Access Token. The web socket address is coded to localhost.
+This program just loops and dumps in JSON format the current ZHA devices database via web sockets. Two examples below of how to use jq linux JSON utility to display records:
 
 This JSON parser will give you a good overview of the records returned by ZHA, run the program ws02.py and let it capture one query of the ZHA devices, paste it into this tool:
 http://jsonviewer.stack.hu/
-
-This program just loops and dumps in JSON format the current ZHA devices database via web sockets. Two examples below of how to use jq linux JSON utility to display records:
 
 ```
 # current date and time in local time, ieee address, device name, lqi
@@ -51,17 +68,5 @@ select(.neighbors[].relationship == "Child") | .neighbors[] | select(.device_typ
 
 ```
 
-ws03.py
-
-Add a Home Assistant Long-Lived Access Token and IP address of your Home Assistant server.
-This program will loop and collect the zigbee devices found and their JSON addributes into a SQLite database table.
-
-ws04.py
-
-This program tries to display ZHA devices based on their 'neighbor' relationship. I'm not sure ZHA updates this neighbor information, still exploring. 
-
-Example output:
-
-![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-example-output.png?raw=true)
 
 
