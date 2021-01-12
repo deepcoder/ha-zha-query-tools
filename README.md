@@ -18,10 +18,11 @@ Add a Home Assistant Long-Lived Access Token and IP address of your Home Assista
 ACCESS_TOKEN = ''
 ```
 
-ws05.py :
+#ws05.py :
 
 has better error handling and is logging less data (not including raw json) to sqlite database so it does not grow so fast
-ws04.py :
+
+#ws04.py :
 
 stores all the raw json data retrieved in the SQLite database
 
@@ -36,7 +37,8 @@ Example SQLite database records:
 
 ![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-sqlite-db.png?raw=true)
 
-ws02.py
+#ws02.py
+
 This program just loops and dumps in JSON format the current ZHA devices database via web sockets. Two examples below of how to use jq linux JSON utility to display records:
 
 This JSON parser will give you a good overview of the records returned by ZHA, run the program ws02.py and let it capture one query of the ZHA devices, paste it into this tool:
