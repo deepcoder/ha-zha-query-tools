@@ -41,10 +41,20 @@ Example SQLite database records:
 
 This program just loops and dumps in JSON format the current ZHA devices database via web sockets. Two examples below of how to use jq linux JSON utility to display records:
 
-This JSON parser will give you a good overview of the records returned by ZHA, run the program ws02.py and let it capture one query of the ZHA devices, paste it into this tool:
+This JSON parser will give you a good overview of the records returned by ZHA, run the program ws02.py and let it capture one query of the ZHA devices, stop the program and paste the raw into this tool, make sure to only capture the complete raw json output between the two outer {}'s :
+
+```
+example of raw json:
+
+{"id": 1, "type": "result", "success": true, "result":............}
+
+copy and paste into this web json viewer.
 http://jsonviewer.stack.hu/
 
 ```
+
+using jq to display subsets of the json returned:
+
 # current date and time in local time, ieee address, device name, lqi
 ./ws02.py | jq -c '.result[] | {date: (now|strflocaltime("%Y-%m-%d %H:%M:%S%Z")), ieee: .ieee, name: .name, lqi: .lqi}'
 {"date":"2021-01-07 22:31:16PST","ieee":"60:a4:23:ff:fe:dd:22:aa","name":"Silicon Labs EZSP","lqi":255}
