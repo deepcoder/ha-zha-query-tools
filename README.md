@@ -68,7 +68,7 @@ using jq to display subsets of the json returned:
 ./ws02.py | jq -c '.result[] | {date: (now|strftime("%s")), ieee: .ieee, name: .name, lqi: .lqi}'
 {"date":"1610116915","ieee":"60:a4:23:ff:fe:a3:22:08","name":"Silicon Labs EZSP","lqi":255}
 {"date":"1610116915","ieee":"f0:d1:b8:00:00:56:4a:8e","name":"LEDVANCE PLUG","lqi":196}
-{"date":"1610116915","ieee":"00:15:8d:00:02:ba:f5:02","name":"LUMI lumi.weather","lqi":255}
+{"date":"1610116915","ieee":"00:15:8d:00:02:bf:f5:02","name":"LUMI lumi.weather","lqi":255}
 ```
 
 ```
