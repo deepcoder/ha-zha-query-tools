@@ -17,6 +17,10 @@ Add a Home Assistant Long-Lived Access Token and IP address of your Home Assista
 ```
 ACCESS_TOKEN = ''
 ```
+## ws06.py :
+
+stores more ZHA attributes in SQLite database, displaying more attributes on output screen, give the ability to create ws06.json file of the raw json returned from web sockets calls
+
 
 ## ws05.py :
 
@@ -31,11 +35,15 @@ Run this program in tmux or other background way to have it collect data over ti
 
 Example output:
 
-![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-display.png?raw=true)
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws06-display.png?raw=true)
 
 Example SQLite database records:
 
-![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws04-sqlite-db.png?raw=true)
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws06-sqlite.png?raw=true)
+
+Example raw JSON record:
+
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws06-json.png?raw=true)
 
 ## ws02.py
 
