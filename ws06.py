@@ -3,10 +3,10 @@
 
 PROGRAM_NAME = "ws06"
 VERSION_MAJOR = "1"
-VERSION_MINOR = "1"
+VERSION_MINOR = "3"
 WORKING_DIRECTORY = ""
 
-# 202101121349     
+# 202101141640      
 #
 # use home assistant web sockets to read zha zigbee devices current state and insert a record into SQLite database for each device found
 # https://developers.home-assistant.io/docs/api/websocket/
@@ -101,7 +101,12 @@ def main():
 
     my_logger.info("Program start : " + PROGRAM_NAME + " Version : " + VERSION_MAJOR + "." + VERSION_MINOR)
 
- 
+
+    if len(ACCESS_TOKEN) == 0 :
+        print("Error : HA Long-Lived token not defined in variable ACCESS_TOKEN")
+        my_logger.error("Error : HA Long-Lived token not defined in variable ACCESS_TOKEN")
+        sys.exit(1)
+     
     # open database and create table if it does not exists
     sql_conn = sqlite3.connect(DATABASE_FILE)
     sql_cursor = sql_conn.cursor()
@@ -195,7 +200,8 @@ def main():
                         "nwk" : device["nwk"], \
                         "lqi" : device["lqi"], \
                         "rssi" : device["rssi"], \
-                        "available" : device_status \
+                        "available" : device_status, \
+                        "is_neighbor" : "false" \
                         }
 
                     # this is a 'fake' record of database, so we can retrieve 'default' values from it, if the key does not exist
@@ -205,12 +211,26 @@ def main():
                         "nwk" : -1, \
                         "lqi" : -1, \
                         "rssi" : 0, \
-                        "available" : "unk" \
+                        "available" : "unk", \
+                        "is_neighbor" : "false" \
                         }
+
+
+                    # print(device_db[device["ieee"]])
+
 
                     # iterate thru each neighbor of the device returned
                     # so basically we are going to display / find / 'pull up' / extract the network of devices by the neighbor connections
                     for neighbor in device["neighbors"] :
+
+                        # check if the current device is found to be the neighor in another device, if not, this is an indicator
+                        # if we loop thru all devices and all the neighbors for each device and this stays 'false' then the device
+                        # is not in any other devices neighbor table, so we will display it at the end as a off line drive
+                        # this is complicated!!! and not sure I have it right, some how a 'parent' device can NOT appear in any other
+                        # 'parent' device neighbor table, however have the 'peer' in it's neighbor table 
+                        if device["ieee"] == neighbor['ieee']  :
+                            # indicate that the current device is found to be the neighbor of another device
+                            device_db[device["ieee"]]["is_neighbor"] = "true"
 
                         # don't display or record in db anything for the first web socket, we is this pass just to populate in memory database
                         if not SETUP_PASS :
@@ -218,8 +238,8 @@ def main():
                             if True :
                             # if neighbor["relationship"] == "Child" :
          
-                                console.print(f"{retrieve_time:%H:%M:%S} ", end="")
-                                console.print(f"{neighbor['device_type']:1.1} ", end="") 
+                                console.print(f"{retrieve_time:%H:%M:%S} ", style = 'white', end="")
+                                console.print(f"{neighbor['device_type']:1.1} ", style = 'bold white', end="") 
 
                                 # devices available seems to be set at some point by ZHA to false if the device is no visable on network
                                 device_available = device_db.get(neighbor['ieee'], device_db_template)['available']
@@ -235,7 +255,7 @@ def main():
                                     av_text = "T"
                                     style = 'bold green on black'
 
-                                console.print(f" Online : ", end="")
+                                console.print(f" Online : ", style = 'white', end="")
                                 console.print(f"{av_text:1}", style=style, end="")
 
                                 # calculate the time delta from this retrieve from ZHA web socket to when this devices was last seen, decimal minutes
@@ -249,12 +269,19 @@ def main():
                                     delta_last_seen_style = 'black on yellow'
                                 if neighbor['device_type'] == "EndDevice" and delta_last_seen > timedelta(minutes=35) :
                                     delta_last_seen_style = 'black on red'
-                                console.print(f" Last seen (min) ", end="")
+                                console.print(f" Last seen (min) ", style = 'white', end="")
                                 device_delta_last_seen = delta_last_seen.seconds/60.0
                                 console.print(f"{device_delta_last_seen:6.1f}", style=delta_last_seen_style, end="")
 
                                 # display the device name
-                                console.print(f" {str(device_db.get(neighbor['ieee'], device_db_template)['user_given_name']):40.40} ", end="")
+
+                                neighbor_name = str(device_db.get(neighbor['ieee'], device_db_template)['user_given_name'])
+                                neighbor_type = str(device_db.get(neighbor['ieee'], device_db_template)['device_type'])
+
+                                if neighbor_type == "Coordinator" :
+                                    console.print(f" {'Coordinator':40.40} ", style = 'white', end="")
+                                else:
+                                    console.print(f" {neighbor_name:40.40} ", style = 'white', end="")
 
                                 lqi_display = int(neighbor['lqi'])
                                 style = 'bold green on black'
@@ -262,7 +289,11 @@ def main():
                                     style = 'bold yellow on black'
                                 if lqi_display < 85 :
                                     style = 'bold red on black'
-                                console.print(f"{lqi_display:3}", style=style, end="")
+
+                                if device_available == "true" :
+                                    console.print(f"{lqi_display:3}", style=style, end="")
+                                else :
+                                    console.print(f"{'unk':4}", style='bold red on black', end="")
 
                                 rssi_display = int(device_db.get(neighbor['ieee'], device_db_template)['rssi'])
                                 style = 'bold green on black'
@@ -271,16 +302,32 @@ def main():
                                 if rssi_display < -33 :
                                     style = 'bold yellow on black'
  
-                                console.print(f" {rssi_display:4}", style=style, end="")
+                                if device_available == "true" :
+                                    console.print(f" {rssi_display:4}", style=style, end="")
+                                else :
+                                    console.print(f"{'unk':>4.4}", style='bold red on black', end="")
 
-                                # display the name of the devices neighbor, end devices are the only device type that will ONLY ONE neighbor (??)
-                                peer_available = device_db.get(neighbor['ieee'], device_db_template)['available']
-                                if peer_available == "false" :
+                                # display then name of the device 'peer', remember we are stepping thru each 'neighbor' of this device
+                                # to display, so these are all the devices which are 'parents', end devices do not have neighbors, so
+                                # no end devices will appear in this column.
+
+                                console.print(f" {neighbor['relationship']:14.14} of : ", style = 'white', end="")
+
+                                # if this 'parent' device is listed as 'off line' color it red, the coordinator seems to always be 'off line'
+                                # which if were true, then the network would be down
+                                peer_available = device_db.get(device['ieee'], device_db_template)['available']
+                                if device_db[device['ieee']]["device_type"] != "Coordinator" and peer_available == "false" :
                                     style = 'bold red'
                                 else :
                                     style = 'white'
-                                console.print(f" {neighbor['relationship']:14.14} of : ", end="")
-                                console.print(f"{str(device['user_given_name']):40.40} ", style=style)
+
+
+                                # so far, it does not look like the Coordinator can be given a 'user given name' so that is always 'none'
+                                # so for the coordinator, display the device type of 'Coordinator'
+                                if device_db[device['ieee']]["device_type"] == "Coordinator" :
+                                    console.print(f"{'Coordinator':40.40} ", style=style)
+                                else:
+                                    console.print(f"{str(device['user_given_name']):40.40} ", style=style)
 
                                 # insert the record for status of each device into the database table for this web socket call
                                 # note we are pulling out the devices by the neighbor each device returned this call
@@ -307,6 +354,57 @@ def main():
                                     str(device['ieee']), \
                                     str(device['user_given_name']) ])
                                 sql_conn.commit()
+
+                if not SETUP_PASS :
+                    for ii in device_db :
+                        # print(device_db[ii])
+                        if device_db[ii]["available"] == "false" :
+                            console.print(f"{retrieve_time:%H:%M:%S} ", style = 'white', end="")
+                            console.print(f"{device_db[ii]['device_type']:1.1} ", style = 'bold white', end="") 
+
+                            # devices available seems to be set at some point by ZHA to false if the device is no visable on network
+                            device_available = device_db[ii]['available']
+                            if device_available == "false" :
+                                av_text = "F"
+                                style = 'bold red on black'
+                            else :
+                                av_text = "T"
+                                style = 'bold green on black'
+                            # hack for coordinator, it thinks it is off line, which could not be, display it as online
+                            if neighbor['device_type'] == "Coordinator" :
+                                device_available = "true"
+                                av_text = "T"
+                                style = 'bold green on black'
+
+                            console.print(f" Online : ", style = 'white', end="")
+                            console.print(f"{av_text:1}", style=style, end="")
+
+                            # calculate the time delta from this retrieve from ZHA web socket to when this devices was last seen, decimal minutes
+                            delta_last_seen = retrieve_time - device_db[ii]['last_seen']
+                            delta_last_seen_style = 'bold green on black'
+                            if device_db[ii]['device_type'] == "Router" and delta_last_seen > timedelta(minutes=1) :
+                                delta_last_seen_style = 'bold yellow on black'
+                            if device_db[ii]['device_type'] == "Router" and delta_last_seen > timedelta(minutes=5) :
+                                delta_last_seen_style = 'bold red on black'
+                            if neighbor['device_type'] == "EndDevice" and delta_last_seen > timedelta(minutes=25) :
+                                delta_last_seen_style = 'black on yellow'
+                            if device_db[ii]['device_type'] == "EndDevice" and delta_last_seen > timedelta(minutes=35) :
+                                delta_last_seen_style = 'black on red'
+                            console.print(f" Last seen (min) ", style = 'white', end="")
+                            device_delta_last_seen = delta_last_seen.seconds/60.0
+                            console.print(f"{device_delta_last_seen:6.1f}", style=delta_last_seen_style, end="")
+
+                            # display the device name
+
+                            neighbor_name = str(device_db[ii]['user_given_name'])
+                            neighbor_type = str(device_db[ii]['device_type'])
+
+                            if neighbor_type == "Coordinator" :
+                                console.print(f" {'Coordinator':40.40} ", style = 'white', end="")
+                            else:
+                                console.print(f" {neighbor_name:40.40} ", style = 'white', end="")
+
+                            console.print(f"{'unk  unk':>8.8}", style='bold red on black')
 
                 console.print(40*"-")
 
