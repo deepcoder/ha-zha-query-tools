@@ -3,10 +3,10 @@
 
 PROGRAM_NAME = "ws06"
 VERSION_MAJOR = "1"
-VERSION_MINOR = "3"
+VERSION_MINOR = "4"
 WORKING_DIRECTORY = ""
 
-# 202101141640      
+# 202101150444      
 #
 # use home assistant web sockets to read zha zigbee devices current state and insert a record into SQLite database for each device found
 # https://developers.home-assistant.io/docs/api/websocket/
@@ -194,12 +194,23 @@ def main():
                         device_status = "false"
 
                     # add a record to our database (dictionary) of zigbee devices on the network
+
+                    if str(device["lqi"]) == "None" :
+                        device_lqi = 0
+                    else :
+                        device_lqi = int(device["lqi"])
+ 
+                    if str(device["rssi"]) == "None" :
+                        device_rssi = 0
+                    else :
+                        device_rssi = int(device["rssi"])
+
                     device_db[device["ieee"]] = {"user_given_name" : device["user_given_name"], \
                         "last_seen" : last_seen_ts, \
                         "device_type" : device["device_type"], \
                         "nwk" : device["nwk"], \
-                        "lqi" : device["lqi"], \
-                        "rssi" : device["rssi"], \
+                        "lqi" : device_lqi, \
+                        "rssi" : device_rssi, \
                         "available" : device_status, \
                         "is_neighbor" : "false" \
                         }
@@ -290,7 +301,11 @@ def main():
                                 if lqi_display < 85 :
                                     style = 'bold red on black'
 
-                                if device_available == "true" :
+                                # if this 'peer' device is listed as 'off line' display unknown for LQI and RSSI connections to this neighbor
+                                # which if were true, then the network would be down
+                                peer_available = device_db.get(device['ieee'], device_db_template)['available']
+
+                                if peer_available == "true" :
                                     console.print(f"{lqi_display:3}", style=style, end="")
                                 else :
                                     console.print(f"{'unk':4}", style='bold red on black', end="")
@@ -299,10 +314,15 @@ def main():
                                 style = 'bold green on black'
                                 if rssi_display < -66 :
                                     style = 'bold red on black'
-                                if rssi_display < -33 :
+                                if rssi_display < -50 :
                                     style = 'bold yellow on black'
  
-                                if device_available == "true" :
+
+                                # if this 'peer' device is listed as 'off line' display unknown for LQI and RSSI connections to this neighbor
+                                # which if were true, then the network would be down
+                                peer_available = device_db.get(device['ieee'], device_db_template)['available']
+
+                                if peer_available == "true" :
                                     console.print(f" {rssi_display:4}", style=style, end="")
                                 else :
                                     console.print(f"{'unk':>4.4}", style='bold red on black', end="")
@@ -355,6 +375,8 @@ def main():
                                     str(device['user_given_name']) ])
                                 sql_conn.commit()
 
+
+                # display a line for all the device which are offline
                 if not SETUP_PASS :
                     for ii in device_db :
                         # print(device_db[ii])
