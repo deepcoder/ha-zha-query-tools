@@ -17,6 +17,21 @@ Add a Home Assistant Long-Lived Access Token and IP address of your Home Assista
 ```
 ACCESS_TOKEN = ''
 ```
+
+## ws07.py :
+
+I countinue to learn, this version should correctly display and save the database the peer LQI data. On the display, the four columns to the left of the first device name column, this is the 'neighbor' of the device in the last column. The four columns:
+```
+LQI from neighbor to peer, this will be na for EndDevices, and may be na of there is only a one way link between the two devices
+RSSI of neighbor
+LQI of peer to neighbor
+RSSI of peer
+```
+
+The database hopefully now records the correct LQI, RSSI columns for each 'pair of devices. I have hopefully done a better job of naming the columns more descriptively.
+
+
+
 ## ws06.py :
 
 stores more ZHA attributes in SQLite database, displaying more attributes on output screen, give the ability to create ws06.json file of the raw json returned from web sockets calls
