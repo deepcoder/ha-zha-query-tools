@@ -30,31 +30,19 @@ RSSI of peer
 
 The database hopefully now records the correct LQI, RSSI columns for each 'pair of devices. I have hopefully done a better job of naming the columns more descriptively.
 
-
-
-## ws06.py :
-
-stores more ZHA attributes in SQLite database, displaying more attributes on output screen, give the ability to create ws06.json file of the raw json returned from web sockets calls
-
-
-## ws05.py :
-
-has better error handling and is logging less data (not including raw json) to sqlite database so it does not grow so fast
-
-## ws04.py :
-
 stores all the raw json data retrieved in the SQLite database
 
 This program tries to display ZHA devices based on their 'neighbor' relationship. It also records a SQLite database of the data returned by each web socket call to ZHA. Devices seems to stay in ZHA until you delete them, so this routine displays and records when a device goes 'OFFLINE' to the ZHA coordinator. It also records the length of time between when the coordinator sees a device and the devices RSSI and LQI values. Still trying to understand how to interpret this data.
 Run this program in tmux or other background way to have it collect data over time. And also so you can get another view of the current state of your ZHA zigbee network.
 
+
 Example output:
 
-![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws06-display.png?raw=true)
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws07-display.png?raw=true)
 
 Example SQLite database records:
 
-![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws06-sqlite.png?raw=true)
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws07-database.png?raw=true)
 
 Example raw JSON record:
 
@@ -118,5 +106,20 @@ select(.neighbors[].relationship == "Child") | .neighbors[] | select(.device_typ
 
 ```
 
+
+retired version....
+
+
+
+## ws06.py :
+
+stores more ZHA attributes in SQLite database, displaying more attributes on output screen, give the ability to create ws06.json file of the raw json returned from web sockets calls
+
+
+## ws05.py :
+
+has better error handling and is logging less data (not including raw json) to sqlite database so it does not grow so fast
+
+## ws04.py :
 
 
