@@ -18,9 +18,10 @@ Add a Home Assistant Long-Lived Access Token and IP address of your Home Assista
 ACCESS_TOKEN = ''
 ```
 
-## ws07.py :
+## ws08.py :
 
-I countinue to learn, this version should correctly display and save the database the peer LQI data. On the display, the four columns to the left of the first device name column, this is the 'neighbor' of the device in the last column. The four columns:
+Added a line to the display for all devices, even if they do not have a neighbor, so there will be a line displayed for all end devices. Also added the logic to find devices that are NOT the neighbor of any other device and display a line for them. Still trying to understand how this can happen, it appears to happen when you add a new device 'via' another device.
+This version should correctly display and save the database the peer LQI data. On the display, the four columns to the left of the first device name column, this is the 'neighbor' of the device in the last column. The four columns:
 ```
 LQI from neighbor to peer, this will be na for EndDevices, and may be na of there is only a one way link between the two devices
 RSSI of neighbor
