@@ -39,7 +39,7 @@ Run this program in tmux or other background way to have it collect data over ti
 
 Example output:
 
-![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws07-display.png?raw=true)
+![alt text](https://github.com/deepcoder/ha-zha-query-tools/blob/main/ws08-display.png?raw=true)
 
 Example SQLite database records:
 
