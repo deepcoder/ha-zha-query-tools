@@ -1,0 +1,22 @@
+# zha_ws.yaml
+# 202101231646   
+
+# debugging to file level
+# Value:
+# CRITICAL (and above)
+# ERROR    (and above)
+# WARNING  (and above)
+# INFO     (and above)
+# DEBUG    (and above)
+# NOTSET   (and above)
+debug_level: "INFO"
+# put empty string for no remote logging
+rsyslog_ip: "192.168.1.11"
+# Home Assistant server IP address and port
+ha_ip: "192.168.1.10:8123"
+# period in seconds between web socket calls
+check_interval: 5
+# Home Assistant long lived key
+access_token : "abcdefghijklmnopqurstuvwxyz"
+# keep raw JSON received from web socket call
+raw_json_keep : False
