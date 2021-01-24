@@ -18,20 +18,9 @@ Add a Home Assistant Long-Lived Access Token and IP address of your Home Assista
 ACCESS_TOKEN = ''
 ```
 
-## ws08.py :
+## zha_ws.py :
 
-Added a line to the display for all devices, even if they do not have a neighbor, so there will be a line displayed for all end devices. Also added the logic to find devices that are NOT the neighbor of any other device and display a line for them. Still trying to understand how this can happen, it appears to happen when you add a new device 'via' another device.
-This version should correctly display and save the database the peer LQI data. On the display, the four columns to the left of the first device name column, this is the 'neighbor' of the device in the last column. The four columns:
-```
-LQI from neighbor to peer, this will be na for EndDevices, and may be na of there is only a one way link between the two devices
-RSSI of neighbor
-LQI of peer to neighbor
-RSSI of peer
-```
-
-The database hopefully now records the correct LQI, RSSI columns for each 'pair of devices. I have hopefully done a better job of naming the columns more descriptively.
-
-stores all the raw json data retrieved in the SQLite database
+refactored SQLite database to reduce size, added configuration via YAML file zha_ws.yaml
 
 This program tries to display ZHA devices based on their 'neighbor' relationship. It also records a SQLite database of the data returned by each web socket call to ZHA. Devices seems to stay in ZHA until you delete them, so this routine displays and records when a device goes 'OFFLINE' to the ZHA coordinator. It also records the length of time between when the coordinator sees a device and the devices RSSI and LQI values. Still trying to understand how to interpret this data.
 Run this program in tmux or other background way to have it collect data over time. And also so you can get another view of the current state of your ZHA zigbee network.
