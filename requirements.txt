@@ -1,7 +1,10 @@
-# requirements.txt for ws*.*
-# 202101082111 
+# requirements.txt for zha_ws.py
+# 202101231644 
 
 websocket-client
 rich
+yaml
+traceback
+sqlite3
 
 
