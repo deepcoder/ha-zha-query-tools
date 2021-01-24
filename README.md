@@ -9,14 +9,7 @@ You can run these python programs anywhere you can launch your browser to get to
 
 These programs retrieve the same data from the ZHA subsystem of HA as the ZHA network visualization page in HA, these programs just display the data in a different format and collect the data overtime into a SQLite database that you can query and see changes to your zigbee network and devices over time.
 
-Change the HA server IP address in this variable if you are not running these programs on the HA server:
-```
-HOME_ASSISTANT_IP = "localhost"
-```
-Add a Home Assistant Long-Lived Access Token and IP address of your Home Assistant server in the code of each program, variable is:
-```
-ACCESS_TOKEN = ''
-```
+Configuration is done via zha_ws.yaml file, see example to configure.
 
 ## zha_ws.py :
 
